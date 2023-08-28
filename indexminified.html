@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>User finder</title>
+	<link rel="stylesheet" type="text/css" href="styled.css">
+	<link href="https://fonts.googleapis.com/css2?family=Inter&family=Lato&display=swap" rel="stylesheet">
+</head>
+<body>
+	<header>
+		<h2>Kim hansı odadadır?</h2>
+	</header>
+	<p>Serverdə aktiv otaqlar</p>
+	<select id="lg" onchange="f(this.value)">
+		<option value="23">Azərbaycanca</option>
+		<option value="8">Türkçe</option>
+		<option value="2">English</option>
+		<option value="7">Русский</option>
+	</select>
+	<div class="flex"></div>
+	<footer>
+		<p>this site was created by ᴀᴤᴤᴀᴤᴤɪɴᴤ</p>
+		<p>Build 0.2Beta</p>
+	</footer>
+<script>
+const fl=document.querySelector(".flex");let roomIds=[];function f(e){fetch("https://gartic.io/req/list?search=&language[]="+e).then(e=>e.json()).then(e=>{let t=e.filter(e=>e.quant>0);if(0!=t.length){fl.innerHTML="";for(let s=0;s<t.length;s++){roomIds.push(t[s].id);let i=document.createElement("div");i.classList.add("flex-child"),fl.appendChild(i);let n=document.createElement("h3"),r=document.createElement("img"),a=document.createElement("p"),l=document.createElement("div"),c=document.createElement("a");l.classList.add("users"),n.innerHTML=t[s].id.slice(1),r.src=`https://gartic.io/static/images/subjects/${t[s].subject}.svg`,a.innerHTML=`${t[s].quant} / ${t[s].max} ・ ${t[s].points} / ${t[s].goal}`,c.href=`https://gartic.io/${t[s].code}/viewer`,c.innerHTML="Go viewer",c.target="_blank",fetch(`https://gartic.io/serverViewer?room=${t[s].code}`).then(e=>e.text()).then(e=>{let t=e.slice(15,16),i=new WebSocket(`wss://server0${t}.gartic.io/socket.io/?EIO=3&transport=websocket`);i.onopen=()=>{i.send(`42[12,{"v":20000,"sala":"${roomIds[s]}"}]`)},i.onmessage=e=>{try{let t=JSON.parse(e.data.slice(2));if(5==t[0])for(let s=0;s<t[5].length;s++){let i=document.createElement("div");i.classList.add("user-info"),l.appendChild(i);let n=document.createElement("img"),r=document.createElement("p");n.src=t[5][s].foto?t[5][s].foto:"https://gartic.io/static/images/avatar/svg/0.svg",r.innerHTML=t[5][s].nick,i.append(n,r)}}catch(a){}}}),i.append(n,r,a,l,c)}}else fl.innerHTML="<h2>There is no room in selected lang.</h2>"})}f("23");
+</script>
+</body>
+</html>
